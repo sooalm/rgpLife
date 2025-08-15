@@ -1,5 +1,7 @@
 import { useState } from "react";
 import gearsLogo from "./assets/gears.svg";
+import Profile from "./Components/Profile.jsx";
+import GraphCon from "./components/GraphCon.jsx";
 
 import "./App.css";
 
@@ -8,10 +10,11 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={gearsLogo} className="logo" alt="Vite logo" />
-        </a>
+      <div className="app-container">
+        <Profile />
+        <GraphCon />
+        <h2>Under Construction</h2>
+        <img src={gearsLogo} className="logo" alt="Under construction" />
       </div>
     </>
   );

@@ -1,15 +1,26 @@
 import React from "react";
 
+import avatar_IMG from "../assets/joePeach.png";
+import "../styles/Profile.css";
+
 const Profile = () => {
   return (
-    <div className="card">
-      <img className="card__img"></img>
-      <h2>@sooalm</h2>
+    <div className="profile-card ">
+      <img src={avatar_IMG} className="card__img"></img>
+      <h3>@sooalm</h3>
       <p>Administraitor</p>
-      <div className="card__stats">
-        <div className="card-stat-row --flex-jb">
+      <div className="profile-stats">
+        <div className="">
           <span>Целей:</span>
-          <span>Число с сервера</span>
+          <span> 3</span>
+        </div>
+        <div className="">
+          <span>Достижений:</span>
+          <span> 0</span>
+        </div>
+        <div className="">
+          <span>Рейтинг:</span>
+          <span> 1</span>
         </div>
       </div>
     </div>

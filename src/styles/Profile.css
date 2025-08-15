@@ -1,0 +1,19 @@
+.profile-card {
+  border: solid 1px black;
+  border-radius: 15px;
+  height: 225px;
+  width: 190px;
+
+  overflow: hidden;
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+.profile-card--side-left {
+}
+.card__img {
+  object-fit: cover;
+  object-position: center;
+  border-radius: 35px;
+  height: 75px;
+  width: 75px;
+}
