@@ -1,26 +1,38 @@
 import React from "react";
 
 import avatar_IMG from "../assets/joePeach.png";
+import learning_IMG from "../assets/traits/icon_learning.png";
+import achievements_IMG from "../assets/traits/Saoshyant.png";
+import rating_IMG from "../assets/traits/Event_trigger.png";
 import "../styles/Profile.css";
 
 const Profile = () => {
   return (
     <div className="profile-card ">
-      <img src={avatar_IMG} className="card__img"></img>
+      <img src={avatar_IMG} className="profile-card__img"></img>
       <h3>@sooalm</h3>
-      <p>Administraitor</p>
+      <p class="profile-jobTitle">Administraitor</p>
       <div className="profile-stats">
-        <div className="">
-          <span>Целей:</span>
-          <span> 3</span>
+        <div className="profile-row">
+          <img src={learning_IMG} className="profile-row__img"></img>
+          <span className="profile-row__line">Опыт:</span>
+          <span className="profile-row__line"> 3</span>
         </div>
-        <div className="">
-          <span>Достижений:</span>
-          <span> 0</span>
+        <div className="profile-row">
+          <img
+            src={achievements_IMG}
+            className="profile-row__img profile-row__img--small "
+          ></img>
+          <span className="profile-row__line">Достижений:</span>
+          <span className="profile-row__line"> 0</span>
         </div>
-        <div className="">
-          <span>Рейтинг:</span>
-          <span> 1</span>
+        <div className="profile-row">
+          <img
+            src={rating_IMG}
+            className="profile-row__img profile-row__img--small "
+          ></img>
+          <span className="profile-row__line">Рейтинг:</span>
+          <span className="profile-row__line"> 1</span>
         </div>
       </div>
     </div>
