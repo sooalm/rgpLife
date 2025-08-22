@@ -11,7 +11,7 @@ const Profile = () => {
     <div className="profile-card ">
       <img src={avatar_IMG} className="profile-card__img"></img>
       <h3>@sooalm</h3>
-      <p class="profile-jobTitle">Administraitor</p>
+      <p className="profile-jobTitle">Administraitor</p>
       <div className="profile-stats">
         <div className="profile-row">
           <img src={learning_IMG} className="profile-row__img"></img>

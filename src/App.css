@@ -12,6 +12,10 @@
 
   min-height: 100vh;
   width: 90%;
+
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr 3fr;
 }
 .logo {
   height: 6em;
