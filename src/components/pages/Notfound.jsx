@@ -1,0 +1,12 @@
+import React from "react";
+
+const Notfound = () => {
+  return (
+    <div>
+      <h2>Under Construction</h2>
+      <img src={gearsLogo} className="logo" alt="Under construction" />
+    </div>
+  );
+};
+
+export default Notfound;

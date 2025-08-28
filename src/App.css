@@ -12,7 +12,8 @@
 
   min-height: 100vh;
   width: 90%;
-
+}
+.app-gridContainer {
   display: grid;
   grid-gap: 10px;
   grid-template-columns: 1fr 3fr;

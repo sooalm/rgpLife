@@ -1,24 +1,31 @@
 import { useState } from "react";
-import gearsLogo from "./assets/gears.svg";
-import Profile from "./Components/Profile.jsx";
-import GraphCon from "./components/GraphCon.jsx";
-import Navigation from "./components/Navigation.jsx";
+import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
+
+import HomePage from "./components/HomePage.jsx";
+import Layout from "./components/pages/Layout.jsx";
+
+import Pomodoro from "./components/pages/Pomodoro.jsx";
+import Tasks from "./components/pages/Tasks.jsx";
+import Achievements from "./components/pages/Achievements.jsx";
+import Notfound from "./components/pages/Notfound.jsx";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <div className="app-container">
-        {/* <Navigation /> */}
-        <Profile />
-        <GraphCon />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="/pomodoro" element={<Pomodoro />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/achievements" element={<Achievements />} />
 
-        <h2>Under Construction</h2>
-        <img src={gearsLogo} className="logo" alt="Under construction" />
-      </div>
+          <Route path="*" element={<Notfound />} />
+        </Route>
+      </Routes>
     </>
   );
 }
