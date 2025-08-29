@@ -12,8 +12,6 @@ import Achievements from "./components/pages/Achievements.jsx";
 import Notfound from "./components/pages/Notfound.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Routes>

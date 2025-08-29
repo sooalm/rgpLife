@@ -11,5 +11,8 @@
   text-decoration: none;
 }
 .nav__link:hover {
-  color: rgb(247, 224, 92);
+  color: rgb(224, 191, 0);
+}
+.nav__link.active {
+  color: rgb(224, 191, 0);
 }

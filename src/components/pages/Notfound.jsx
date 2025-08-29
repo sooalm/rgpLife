@@ -1,5 +1,5 @@
 import React from "react";
-
+import gearsLogo from "../../assets/gears.svg";
 const Notfound = () => {
   return (
     <div>
