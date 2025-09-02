@@ -6,7 +6,9 @@ import "../../../styles/ProgressBar.css";
 import { TimeContext } from "./TimeContextProvider";
 
 const ProgressBar = () => {
-  const [time, setTime] = useState(`25:00`);
+  const [time, setTime] = useState(25 * 60);
+  const [initiallTime, setInitiallTime] = useState(25 * 60);
+
   const [percent, setPercent] = useState(0);
   const { sharedDataTime, setSharedDataTime } = useContext(TimeContext); //время что назначенно инпутами
 
@@ -15,54 +17,48 @@ const ProgressBar = () => {
     return () => clearInterval(intervalId.current); // Очистка интервала при размонтировании
   }, []);
 
-  function timeStringConverter() {}
+  function timeStringConverter(time) {
+    const hours = String(Math.floor(time / 3600));
+    const minutes = String(Math.floor((time - hours * 3600) / 60)).padStart(
+      2,
+      "0"
+    );
+
+    const seconds = String(time - hours * 60 * 60 - minutes * 60).padStart(
+      2,
+      "0"
+    );
+
+    return hours == 0
+      ? `${minutes}:${seconds}`
+      : `${hours}:${minutes}:${seconds}`;
+  }
   function timeCount(initiallSeconds, secondsAll) {
     console.log(`timeCount`);
-
-    if (secondsAll == 0) {
+    setTime(secondsAll);
+    if (secondsAll <= 0) {
       console.log("finish");
-      setTime(`finish`);
+      // setTime(`finish`);
       setPercent(100);
       clearInterval(intervalId.current);
+    } else {
+      setPercent(100 - (secondsAll / initiallSeconds) * 100);
+
+      secondsAll--;
+
+      return secondsAll;
     }
-    const hours = String(Math.floor(secondsAll / 3600));
-    const minutes = String(
-      Math.floor((secondsAll - hours * 3600) / 60)
-    ).padStart(2, "0");
-
-    const seconds = String(
-      secondsAll - hours * 60 * 60 - minutes * 60
-    ).padStart(2, "0");
-
-    hours == 0
-      ? setTime(`${minutes}:${seconds}`)
-      : setTime(`${hours}:${minutes}:${seconds}`);
-
-    setPercent(100 - (secondsAll / initiallSeconds) * 100);
-
-    secondsAll--;
-    return secondsAll;
   }
   function handleTime(secondsAll) {
-    const initiallSeconds = secondsAll;
+    // const initiallSeconds = secondsAll;
     intervalId.current = setInterval(() => {
-      secondsAll = timeCount(initiallSeconds, secondsAll);
+      secondsAll = timeCount(initiallTime, secondsAll);
     }, 1000);
   }
 
   function handlePlayButton() {
     clearInterval(intervalId.current);
-
-    if (sharedDataTime) {
-      console.log(`play if`);
-      const [h, m, s] = sharedDataTime;
-      const timeSeconds = +h * 3600 + +m * 60 + +s;
-      handleTime(timeSeconds);
-      setSharedDataTime(false);
-    } else {
-      handleTime(5);
-      console.log(`play else`);
-    }
+    handleTime(time);
   }
   function handlePauseButton() {
     clearInterval(intervalId.current);
@@ -72,21 +68,23 @@ const ProgressBar = () => {
     console.log(`reset`);
     clearInterval(intervalId.current);
     setPercent(0);
-    setTime(`25:00`);
+    setTime(25 * 60);
+    setInitiallTime(25 * 60);
     setSharedDataTime(false);
   }
 
   useEffect(() => {
     // если данные в startProgress были назначены, активируется
+    console.log("use effect");
     if (sharedDataTime) {
+      console.log("true");
+      clearInterval(intervalId.current);
       const [h, m, s] = sharedDataTime;
       const timeSeconds = +h * 3600 + +m * 60 + +s;
-      // handleResetButton();
-      const formattedM = String(m).padStart(2, "0");
-      const formattedS = String(s).padStart(2, "0");
-      h == 0
-        ? setTime(`${formattedM}:${formattedS}`)
-        : setTime(`${h}:${formattedM}:${formattedS}`);
+      setInitiallTime(timeSeconds);
+      setTime(timeSeconds);
+      setPercent(0);
+      setSharedDataTime(false);
     }
   }, [sharedDataTime]);
 

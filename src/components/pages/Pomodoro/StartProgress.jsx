@@ -11,7 +11,19 @@ const StartProgress = () => {
 
   const handleChange = (index) => (event) => {
     const newInputs = [...inputs]; // Копируем текущие значения
-    newInputs[index] = event.target.value; // Обновляем значение по индексу
+    const value = event.target.value;
+    // if (index == 0 && event.target.value > 9) {
+    //   newInputs[index] = 8;
+    // } else {
+    //   newInputs[index] = event.target.value;
+    // }
+    if (/^\d{0,2}$/.test(value)) {
+      newInputs[index] = value;
+    }
+    if (index == 0 && value > 9) {
+      newInputs[index] = 9;
+    }
+    // Обновляем значение по индексу
     setInputs(newInputs); // Обновляем состояние
   };
 
