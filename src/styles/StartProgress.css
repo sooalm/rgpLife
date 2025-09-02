@@ -1,0 +1,48 @@
+.pomodoro-container__input {
+  width: 50px;
+  height: 10px;
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.pomodoro-container__input:focus {
+  border-color: #007bff; /* Цвет границы при фокусе */
+  outline: none; /* Убираем стандартное обводка при фокусе */
+}
+.pomodoro-container__label {
+  display: inline-block; /* Позволяет установить ширину */
+  width: 80px;
+  text-align: left;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px; /* Отступы */
+  font-size: 16px; /* Размер шрифта */
+  cursor: pointer; /* Курсор при наведении */
+  transition: background-color 0.3s ease; /* Плавный переход для фона */
+}
+.submit-button {
+  margin-top: 1rem;
+}
+.submit-button:hover {
+  background-color: #45a049; /* Темнее при наведении */
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Легкая тень при фокусе */
+}

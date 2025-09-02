@@ -1,9 +1,9 @@
 import React from "react";
-import "../App.css";
-import gearsLogo from "../assets/gears.svg";
+import "../../App.css";
+import gearsLogo from "../../assets/gears.svg";
 
-import GraphCon from "../components/GraphCon.jsx";
-import Profile from "../components/Profile.jsx";
+import GraphCon from "../GraphCon.jsx";
+import Profile from "../Profile.jsx";
 
 const HomePage = () => {
   return (

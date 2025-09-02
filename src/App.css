@@ -10,8 +10,10 @@
 .app-container {
   background-color: rgb(240, 246, 254);
 
-  min-height: 100vh;
+  height: 100vh;
   width: 90%;
+
+  position: relative;
 }
 .app-gridContainer {
   display: grid;
