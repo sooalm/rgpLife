@@ -7,7 +7,7 @@ import Layout from "./components/pages/Layout.jsx";
 
 import Pomodoro from "./components/pages/Pomodoro/Pomodoro.jsx";
 import Tasks from "./components/pages/Tasks.jsx";
-import Achievements from "./components/pages/Achievements.jsx";
+import Achievements from "./components/pages/Achievements/Achievements.jsx";
 import Notfound from "./components/pages/Notfound.jsx";
 
 function App() {

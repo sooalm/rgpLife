@@ -11,11 +11,11 @@
 
   overflow: auto;
 
-  scrollbar-width: none; /*firefox*/
+  /* scrollbar-width: none; firefox
   &::-webkit-scrollbar {
-    /*google,safari*/
+   google,safari
     display: none;
-  }
+   }*/
 }
 .achievements-list {
   display: flex;

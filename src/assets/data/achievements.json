@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Первый шаг",
+    "svgBase64": "null",
+    "description": "Вы сделали свой первый помидор!",
+    "rarity": "common"
+  },
+  {
+    "name": "Усердный",
+    "svgBase64": "null",
+    "description": "Вы провели 4 серии помидоров подряд!",
+    "rarity": "common"
+  },
+  {
+    "name": "Неделя помидоров",
+    "svgBase64": "null",
+    "description": "Вы поидорили всю неделю!",
+    "rarity": "uncommon"
+  },
+
+  {
+    "name": "1000",
+    "svgBase64": "null",
+    "description": "1000 помидоров!",
+    "rarity": "rare"
+  }
+]
