@@ -1,17 +1,20 @@
 [
   {
+    "id": 1,
     "name": "Первый шаг",
     "svgBase64": "null",
     "description": "Вы сделали свой первый помидор!",
     "rarity": "common"
   },
   {
+    "id": 2,
     "name": "Усердный",
     "svgBase64": "null",
     "description": "Вы провели 4 серии помидоров подряд!",
     "rarity": "common"
   },
   {
+    "id": 3,
     "name": "Неделя помидоров",
     "svgBase64": "null",
     "description": "Вы поидорили всю неделю!",
@@ -19,9 +22,262 @@
   },
 
   {
+    "id": 4,
     "name": "1000",
     "svgBase64": "null",
     "description": "1000 помидоров!",
     "rarity": "rare"
+  },
+  {
+    "id": 5,
+    "name": "Мастер фокуса",
+    "svgBase64": "null",
+    "description": "Завершите 10 помидоров без перерывов",
+    "rarity": "common"
+  },
+  {
+    "id": 6,
+    "name": "Ранняя пташка",
+    "svgBase64": "null",
+    "description": "Завершите 5 помидоров до полудня",
+    "rarity": "common"
+  },
+  {
+    "id": 7,
+    "name": "Ночная сова",
+    "svgBase64": "null",
+    "description": "Завершите 5 помидоров после полуночи",
+    "rarity": "common"
+  },
+  {
+    "id": 8,
+    "name": "Неделя продуктивности",
+    "svgBase64": "null",
+    "description": "Завершите 35 помидоров за неделю",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 9,
+    "name": "Марафонец",
+    "svgBase64": "null",
+    "description": "Завершите 10 помидоров за один день",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 10,
+    "name": "Стратег",
+    "svgBase64": "null",
+    "description": "Используйте 4 разных типа задач в помидорах",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 11,
+    "name": "5000",
+    "svgBase64": "null",
+    "description": "5000 помидоров!",
+    "rarity": "rare"
+  },
+  {
+    "id": 12,
+    "name": "Месяц дисциплины",
+    "svgBase64": "null",
+    "description": "Завершите помидоры каждый день в течение месяца",
+    "rarity": "rare"
+  },
+  {
+    "id": 13,
+    "name": "Экспериментатор",
+    "svgBase64": "null",
+    "description": "Попробуйте все доступные настройки таймера",
+    "rarity": "rare"
+  },
+  {
+    "id": 14,
+    "name": "Ветеран",
+    "svgBase64": "null",
+    "description": "Используйте технику Pomodoro более года",
+    "rarity": "epic"
+  },
+  {
+    "id": 15,
+    "name": "10000",
+    "svgBase64": "null",
+    "description": "10000 помидоров!",
+    "rarity": "epic"
+  },
+  {
+    "id": 16,
+    "name": "Перфекционист",
+    "svgBase64": "null",
+    "description": "Завершите 100 помидоров без пропущенных сессий",
+    "rarity": "epic"
+  },
+  {
+    "id": 17,
+    "name": "Гуру продуктивности",
+    "svgBase64": "null",
+    "description": "Достигните максимального уровня в системе",
+    "rarity": "legendary"
+  },
+  {
+    "id": 18,
+    "name": "Мультитаскер",
+    "svgBase64": "null",
+    "description": "Работайте над 5 разными проектами одновременно",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 19,
+    "name": "Социальный бабочка",
+    "svgBase64": "null",
+    "description": "Поделитесь своими достижениями в социальных сетях",
+    "rarity": "common"
+  },
+  {
+    "id": 20,
+    "name": "Ученик",
+    "svgBase64": "null",
+    "description": "Завершите свой первый обучающий курс с помидорами",
+    "rarity": "common"
+  },
+  {
+    "id": 21,
+    "name": "Мастер",
+    "svgBase64": "null",
+    "description": "Завершите продвинутый курс с помидорами",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 22,
+    "name": "Коллекционер",
+    "svgBase64": "null",
+    "description": "Соберите 20 различных достижений",
+    "rarity": "rare"
+  },
+  {
+    "id": 23,
+    "name": "Легенда",
+    "svgBase64": "null",
+    "description": "Соберите все достижения в системе",
+    "rarity": "legendary"
+  },
+  {
+    "id": 24,
+    "name": "Сезонный работник",
+    "svgBase64": "null",
+    "description": "Завершите помидоры во все четыре времени года",
+    "rarity": "rare"
+  },
+  {
+    "id": 25,
+    "name": "Международный",
+    "svgBase64": "null",
+    "description": "Используйте приложение в 5 разных странах",
+    "rarity": "epic"
+  },
+  {
+    "id": 26,
+    "name": "Неудержимый",
+    "svgBase64": "null",
+    "description": "Завершите 100 помидоров подряд без пропусков",
+    "rarity": "legendary"
+  },
+  {
+    "id": 27,
+    "name": "Создатель привычки",
+    "svgBase64": "null",
+    "description": "Используйте технику 66 дней подряд",
+    "rarity": "epic"
+  },
+  {
+    "id": 28,
+    "name": "Рекордсмен",
+    "svgBase64": "null",
+    "description": "Установите личный рекорд помидоров за день",
+    "rarity": "rare"
+  },
+  {
+    "id": 29,
+    "name": "Теоретик",
+    "svgBase64": "null",
+    "description": "Прочтите всю документацию по технике Pomodoro",
+    "rarity": "common"
+  },
+  {
+    "id": 30,
+    "name": "Практик",
+    "svgBase64": "null",
+    "description": "Примените 10 различных советов из документации",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 31,
+    "name": "Новатор",
+    "svgBase64": "null",
+    "description": "Создайте собственную вариацию техники Pomodoro",
+    "rarity": "epic"
+  },
+  {
+    "id": 32,
+    "name": "Посол",
+    "svgBase64": "null",
+    "description": "Помогите 5 друзьям начать использовать технику",
+    "rarity": "rare"
+  },
+  {
+    "id": 33,
+    "name": "Командный игрок",
+    "svgBase64": "null",
+    "description": "Завершите 50 групповых помидоров",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 34,
+    "name": "Лидер",
+    "svgBase64": "null",
+    "description": "Организуйте 10 групповых сессий Pomodoro",
+    "rarity": "rare"
+  },
+  {
+    "id": 35,
+    "name": "Философ",
+    "svgBase64": "null",
+    "description": "Поразмышляйте о продуктивности во время 100 перерывов",
+    "rarity": "uncommon"
+  },
+  {
+    "id": 36,
+    "name": "25000",
+    "svgBase64": "null",
+    "description": "25000 помидоров!",
+    "rarity": "legendary"
+  },
+  {
+    "id": 37,
+    "name": "Восходящая звезда",
+    "svgBase64": "null",
+    "description": "Закончите месяц с рекордным количеством помидоров",
+    "rarity": "epic"
+  },
+  {
+    "id": 38,
+    "name": "Мудрец",
+    "svgBase64": "null",
+    "description": "Используйте технику более 5 лет",
+    "rarity": "legendary"
+  },
+  {
+    "id": 39,
+    "name": "Пионер",
+    "svgBase64": "null",
+    "description": "Будьте среди первых 1000 пользователей приложения",
+    "rarity": "epic"
+  },
+  {
+    "id": 40,
+    "name": "Вдохновитель",
+    "svgBase64": "null",
+    "description": "Ваша история будет featured в нашем блоге",
+    "rarity": "legendary"
   }
 ]
