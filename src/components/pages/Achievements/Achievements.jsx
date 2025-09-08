@@ -8,22 +8,22 @@ import trophy from "/src/assets/trophy.svg";
 const Achievements = () => {
   const currentPageRef = useRef(1);
 
-  const [items, setItems] = useState(
-    Array.from({ length: 1 }, (_, i) => {
-      return (
-        <>
-          <img
-            key={uuidv4()}
-            src={trophy}
-            className="achievements-list__trophy "
-          />
-          <div className="item">
-            <span className="item__name">Новичок</span>
-          </div>
-        </>
-      );
-    })
-  );
+  const [items, setItems] = useState([])
+  //   Array.from({ length: 1 }, (_, i) => {
+  //     return (
+  //       <>
+  //         <img
+  //           key={uuidv4()}
+  //           src={trophy}
+  //           className="achievements-list__trophy "
+  //         />
+  //         <div className="item">
+  //           <span className="item__name">Новичок</span>
+  //         </div>
+  //       </>
+  //     );
+  //   })
+  // );
   const observer = useRef();
   const lastItemRef = useRef([]);
   const isLoadingRef = useRef(false);
@@ -31,6 +31,7 @@ const Achievements = () => {
   async function fetchData(page = 1, limit = 20) {
     let newData = [];
     console.log("Fetching page:", page);
+          
 
     try {
       const response = await fetch("/src/assets/data/achievements.json");
@@ -54,22 +55,32 @@ const Achievements = () => {
               className="achievements-list__trophy "
             />
             <div className="item">
-              <div className="item__name">{item.name}</div>
+              <div className="item__name">{item.name} {item.id}</div>
               <div className="item__description">{item.description}</div>
               <div className="item__rarity">{item.rarity}</div>
             </div>
           </>
         );
       });
+      
     } catch (error) {
       console.error("Error fetching achievements:", error);
       return [];
     }
-    return newData;
+    
+  //  if(newData.length<0) currentPageRef.current -= 1;
+       if(newData.length > 0){ currentPageRef.current += 1;  console.log("newData.length: ", newData[0].props.children[1].props.children[0].props.children);} 
+        return newData;
   }
 
   const loadMoreItems = () => {
+   if(!isLoadingRef.current){
+    isLoadingRef.current=true;
+
+    console.log("current: ", currentPageRef.current);
+    
     fetchData(currentPageRef.current).then((newData) => {
+      
       setItems((prev) => {
         // Проверяем лимит с актуальным состоянием
         if (prev.length >= 120) {
@@ -85,23 +96,23 @@ const Achievements = () => {
           }
           return prev; // Возвращаем старое состояние без изменений
         }
-
-        const newArray = [...prev, ...newData];
+      
+        const newArray = [...prev, ...newData]; 
         // Здесь newArray уже содержит обновленные данные
         // console.log("Новая длина:", newArray.length);
 
-        // Увеличиваем страницу только если получили данные
-        if (newData.length > 0) {
-          currentPageRef.current += 1;
-          // console.log("Updated page to:", currentPageRef.current);
-        } else {
+        if (newData.length < 0)  {
           console.log("No more data, page remains:", currentPageRef.current);
         }
-
+        //  if(newData.length > 0){ currentPageRef.current += 1;  console.log("newData.length: ", newData[0].props.children[1].props.children[0].props.children);} 
+        
+         isLoadingRef.current=false;
         return newArray;
       });
 
-      isLoadingRef.current = false;
+      //  if(newData.length > 0){ currentPageRef.current += 1;  console.log("newData.length: ", newData[0].props.children[1].props.children[0].props.children);} 
+  
+      
     });
     // const newItems = Array.from({ length: 20 }, (_, i) => {
     //   return (
@@ -112,6 +123,7 @@ const Achievements = () => {
     //     />
     //   );
     // });
+}
   };
 
   const handleObserver = (entries) => {
@@ -119,14 +131,15 @@ const Achievements = () => {
 
     // console.log("observer target: ", lastEntry.target);
 
-    if (lastEntry.isIntersecting && !isLoadingRef.current) {
-      isLoadingRef.current = true;
+    if (lastEntry.isIntersecting ) {
+      
       loadMoreItems();
+      
     }
   };
   const setLastItemRef = (node) => {
-    if (node) {
-      if (!lastItemRef.current.includes(node)) {
+    // if (node) {
+      if (node && !lastItemRef.current.includes(node)) {
         lastItemRef.current.push(node);
 
         // console.log("node: ", node);
@@ -140,33 +153,39 @@ const Achievements = () => {
 
       if (
         lastItemRef.current.length - 2 >= 0 &&
-        lastItemRef.current[lastItemRef.current.length - 2] &&
-        observer.current
+        lastItemRef.current[lastItemRef.current.length - 2]
+        
       ) {
         lastItemRef.current[lastItemRef.current.length - 2].style.border =
           "5px solid black";
-        observer.current.unobserve(
+        if(observer.current) observer.current.unobserve(
           lastItemRef.current[lastItemRef.current.length - 2]
         );
       }
-    } //else console.log("NODE == 0   ----> ", node);
+    //else console.log("NODE == 0   ----> ", node);
   };
   useEffect(() => {
     // console.log("++++++++++++++++++запущен обсервер");
-    // if (items.length === 0) {
-    //   loadMoreItems(); // Загружаем только если данных еще нет
-    // }
-
+     observer.current = new IntersectionObserver(handleObserver);
+    if (items.length === 0) {
+     
+      loadMoreItems(); // Загружаем только если данных еще нет
+      // setLastItemRef(null); // Инициализируем lastItemRef
+    }
+   
     if (lastItemRef.current[0]) {
-      observer.current = new IntersectionObserver(handleObserver);
+      console.log("lastItemRef.current[0]: ", lastItemRef.current[0]);
+     
       observer.current.observe(lastItemRef.current[0]);
     }
 
     return () => {
-      if (lastItemRef.current[0]) {
+      if (lastItemRef.current[0]&& observer.current) {
+       
         observer.current.unobserve(lastItemRef.current[0]);
-        observer.current.disconnect();
+        
       }
+      observer.current.disconnect();
       // console.log("--------------------дисконект обсервер");
     };
   }, []); //lastItemRef.current
