@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import "/src/styles/Achievements.css";
@@ -8,27 +7,153 @@ import trophy from "/src/assets/trophy.svg";
 const Achievements = () => {
   const currentPageRef = useRef(1);
 
-  const [items, setItems] = useState([]);
-  //   Array.from({ length: 1 }, (_, i) => {
-  //     return (
-  //       <>
-  //         <img
-  //           key={uuidv4()}
-  //           src={trophy}
-  //           className="achievements-list__trophy "
-  //         />
-  //         <div className="item">
-  //           <span className="item__name">Новичок</span>
-  //         </div>
-  //       </>
-  //     );
-  //   })
-  // );
+  const itemsRef = useRef([]);
+
   const observer = useRef();
   const lastItemRef = useRef([]);
   const isLoadingRef = useRef(false);
 
-  async function fetchData(page = 1, limit = 20) {
+  const scrollRef = useRef();
+  const [topSpacerHeight, setTopSpacerHeight] = useState(0);
+  const [bottomSpacerHeight, setbottomSpacerHeight] = useState(0);
+
+  const [visibleItems, setVisibleItems] = useState([...itemsRef.current]);
+  const animationFrameId = useRef();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+
+      animationFrameId.current = requestAnimationFrame(() => {
+        virtualisation();
+      });
+    };
+
+    if (scrollRef.current) {
+      scrollRef.current.addEventListener("scroll", handleScroll);
+      virtualisation(); // Initial call
+    }
+
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      if (scrollRef.current) {
+        scrollRef.current.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [itemsRef.current]);
+
+  const isLoadingVirtualise = useRef(false);
+
+  function virtualisation() {
+    const scrollTop = Math.floor(scrollRef.current.scrollTop);
+    const visibleHeight = Math.floor(scrollRef.current.clientHeight);
+    const visibleWidth = Math.floor(scrollRef.current.clientWidth);
+
+    const itemHeight = 180; // Высота одного элемента (примерно)
+    const itemsGap = 8;
+    const itemsPerRow = Math.floor(visibleWidth / (itemHeight+itemsGap)); // Высота одного элемента (примерно)
+
+    // if(!isLoadingVirtualise.current){
+      isLoadingVirtualise.current=true;
+    // Вычисляем индексы видимых элементов
+    const startRow = Math.max(0, Math.floor(scrollTop / (itemHeight + itemsGap)) - 2);
+    const visibleRowCount = Math.ceil(visibleHeight / (itemHeight + itemsGap)) + 4;
+
+    const startIndex = Math.min(
+      Math.max(0, startRow * itemsPerRow),
+      Math.max(0, itemsRef.current.length - 1)
+    );
+    
+    const endIndex = Math.min(
+      startIndex + visibleRowCount * itemsPerRow,
+      itemsRef.current.length
+    );
+    
+    const totalHeight = Math.floor(scrollRef.current.scrollHeight);
+    const bottomScroll = totalHeight - scrollTop - visibleHeight;
+        
+    // console.log(bottomScroll)
+    // if (bottomScroll <= 100) {  // Increased from 5 to 100 for better UX
+    //   requestAnimationFrame(() => {
+    //     scrollRef.current.scrollTo({
+    //       top: scrollRef.current.scrollHeight,
+    //       behavior: 'auto'
+    //     });
+    //   });
+    // }
+    
+       // Вычисляем отступы
+     const topPadding = Math.max(0, startRow * (itemHeight + itemsGap));
+    
+     // Обновляем отступы и видимые элементы в одном состоянии
+     setTopSpacerHeight(prevTop => {
+       if (Math.abs(prevTop - topPadding) > 10 ) {
+         return topPadding;
+       }
+       return prevTop;
+     });
+
+     if (startIndex !== endIndex) {
+      setVisibleItems(itemsRef.current.slice(startIndex, endIndex));
+    }
+
+    const totalItems = itemsRef.current.length;
+    const totalRows = Math.ceil(totalItems / itemsPerRow);
+    setbottomSpacerHeight(Math.max(0, 
+      totalRows * (itemHeight + itemsGap * 2) - 
+      (topSpacerHeight + (endIndex - startIndex) / itemsPerRow * (itemHeight + itemsGap * 2)))
+    );
+    isLoadingVirtualise.current=false;
+  // }
+    // setMainContainerHeight(Math.floor(
+    //   (endIndex - startIndex) / itemsPerRow * (itemHeight + itemsGap * 2)*1.2
+    // ));
+        
+// console.log(startIndex,endIndex,scrollTop)
+
+        // setVisibleItems((prev) => {
+        //   //const amountItems = items.length;
+        //   if (itemsRef.current.length === 0) return prev;
+          
+         
+        //   setTopSpacerHeight((pre) => {
+         
+        //       isLoadingVirtualise.current = true;
+        //     const newPadding = Math.max(0,Math.floor(((startIndex / itemsPerRow) * itemHeight) ));
+        //     console.log(":::",startIndex,newPadding,scrollTop)
+        //     // if(newPadding > scrollTop) return (scrollTop);
+          
+            
+        //     // if(bottomScroll<itemHeight){
+        //     //   startIndex-=itemsPerRow;
+        //     //   endIndex +=itemsPerRow;
+             
+        //     //   return pre
+        //     //  }
+        //     // else
+          
+        //      if ( Math.abs(newPadding - pre) > 10 ) {
+           
+             
+        //       return newPadding;
+        //     }
+        //     // return pre;
+         
+        //   return pre;
+        //   });
+
+        //   isLoadingVirtualise.current = false;
+        //   return itemsRef.current.slice(startIndex, endIndex);
+        // });
+        
+
+    
+  }
+  async function fetchData(page = 1, limit = 30) {
     let newData = [];
     console.log("Fetching page:", page);
 
@@ -78,13 +203,17 @@ const Achievements = () => {
       );
     } else {
       currentPageRef.current += 1;
-      newData.push(
-        <img
-          key={uuidv4()}
-          src={trophy}
-          className="achievements-list__trophy "
-        />
-      );
+      for (let i = 0; i < 20; i++) {
+        // Add 5 elements
+        newData.push(
+          <img
+            key={uuidv4()}
+            src={trophy}
+            className="achievements-list__trophy "
+          />
+        );
+      }
+      // virtualisation();
     }
     return newData;
   }
@@ -94,37 +223,19 @@ const Achievements = () => {
       isLoadingRef.current = true;
 
       console.log("current: ", currentPageRef.current);
+      
 
       fetchData(currentPageRef.current).then((newData) => {
-        setItems((prev) => {
-          // Проверяем лимит с актуальным состоянием
-          /*if (prev.length >= 120) {
-            console.log("Достигнут лимит в 120 элементов");
-            // Отключаем observer для последнего элемента
-            if (observer.current && lastItemRef.current.length > 0) {
-              const lastElement =
-                lastItemRef.current[lastItemRef.current.length - 1];
-              if (lastElement) {
-                observer.current.unobserve(lastElement);
-                console.log("Observer отключен для последнего элемента");
-              }
-            }
-            return prev; // Возвращаем старое состояние без изменений
-          }*/
+        // Update the ref with new data
+        const isFirstLoad = itemsRef.current.length === 0;
+        itemsRef.current = [...itemsRef.current, ...newData];
 
-          const newArray = [...prev, ...newData];
-          // Здесь newArray уже содержит обновленные данные
+        // Update visible items for the first load
+        if (isFirstLoad) {
+          setVisibleItems(itemsRef.current);
+        }
 
-          /* if (newData.length < 0) {
-            console.log("No more data, page remains:", currentPageRef.current);
-          }*/
-          //  if(newData.length > 0){ currentPageRef.current += 1;  console.log("newData.length: ", newData[0].props.children[1].props.children[0].props.children);}
-
-          isLoadingRef.current = false;
-          return newArray;
-        });
-
-        //  if(newData.length > 0){ currentPageRef.current += 1;  console.log("newData.length: ", newData[0].props.children[1].props.children[0].props.children);}
+        isLoadingRef.current = false;
       });
       // const newItems = Array.from({ length: 20 }, (_, i) => {
       //   return (
@@ -145,9 +256,11 @@ const Achievements = () => {
 
     if (lastEntry.isIntersecting) {
       loadMoreItems();
+      // virtualisation();
     }
   };
   const setLastItemRef = (node) => {
+    // console.log(node);
     // if (node) {
     if (node && !lastItemRef.current.includes(node)) {
       lastItemRef.current.push(node);
@@ -166,17 +279,20 @@ const Achievements = () => {
     ) {
       lastItemRef.current[lastItemRef.current.length - 2].style.border =
         "5px solid black";
-      if (observer.current)
+      if (observer.current) {
         observer.current.unobserve(
           lastItemRef.current[lastItemRef.current.length - 2]
         );
+        lastItemRef.current[0].style.border = "5px solid purple";
+        lastItemRef.current.shift();
+      }
     }
     //else console.log("NODE == 0   ----> ", node);
   };
   useEffect(() => {
     // console.log("++++++++++++++++++запущен обсервер");
     observer.current = new IntersectionObserver(handleObserver);
-    if (items.length === 0) {
+    if (itemsRef.current.length === 0) {
       loadMoreItems(); // Загружаем только если данных еще нет
       // setLastItemRef(null); // Инициализируем lastItemRef
     }
@@ -186,8 +302,10 @@ const Achievements = () => {
 
       observer.current.observe(lastItemRef.current[0]);
     }
-
+    // scrollRef.current.addEventListener("scroll", virtualisation);
     return () => {
+      // if (scrollRef.current)
+      // scrollRef.current.removeEventListener("scroll", virtualisation);
       if (lastItemRef.current[0] && observer.current) {
         observer.current.unobserve(lastItemRef.current[0]);
       }
@@ -196,20 +314,34 @@ const Achievements = () => {
     };
   }, []); //lastItemRef.current
   return (
-    <div className="achievments">
-      <div className="achievements-list">
-        {items.map((item, index) => {
+    <div className="achievments" ref={scrollRef}>
+      <div style={{ height: `${topSpacerHeight}px`,
+          width: '100%',
+          pointerEvents: 'none' }}></div>
+      <div className="achievements-list" >
+        {visibleItems.map((item, index) => {
           return (
             <div
               className="achievements-list__elements"
               key={index}
-              ref={index === items.length - 1 ? setLastItemRef : null}
+              ref={
+                 index  === visibleItems.length - 1 ? setLastItemRef : null
+              }
             >
               {item}
             </div>
           );
         })}
+      
+        {/* <span ref={setLastItemRef} style={{marginTop:`112rem`,position:`absolute`}}></span> */}
       </div>
+      {/* {bottomSpacerHeight > 0 && (
+        <div  style={{ 
+          height: `${bottomSpacerHeight}px`,
+          width: '100%',
+          pointerEvents: 'none'
+        }} />
+      )} */}
     </div>
   );
 };
