@@ -28,6 +28,8 @@
 
   place-items: center;
   justify-content: space-evenly;
+
+  position: relative;
 }
 .achievements-list__elements {
   border: 3px solid rgba(255, 166, 0, 0.741);
