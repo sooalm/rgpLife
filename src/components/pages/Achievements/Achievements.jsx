@@ -68,34 +68,28 @@ const Achievements = () => {
       Math.max(0, itemsRef.current.length - 1)
     );
     
+    // Вычисляем конец диапазона видимых элементов
     const endIndex = Math.min(
       startIndex + visibleRowCount * itemsPerRow,
       itemsRef.current.length
     );
     
+    // Рассчитываем общую высоту контейнера и текущее положение прокрутки
     const totalHeight = Math.floor(scrollRef.current.scrollHeight);
     const bottomScroll = totalHeight - scrollTop - visibleHeight;
-        
-    // console.log(bottomScroll)
-    // if (bottomScroll <= 100) {  // Increased from 5 to 100 for better UX
-    //   requestAnimationFrame(() => {
-    //     scrollRef.current.scrollTo({
-    //       top: scrollRef.current.scrollHeight,
-    //       behavior: 'auto'
-    //     });
-    //   });
-    // }
     
-       // Вычисляем отступы
-     const topPadding = Math.max(0, startRow * (itemHeight + itemsGap));
+    // Вычисляем отступ сверху для виртуализированного скролла
+    // Умножаем номер начальной строки на высоту элемента с учетом отступа
+    const topPadding = Math.max(0, startRow * (itemHeight + itemsGap));
     
-     // Обновляем отступы и видимые элементы в одном состоянии
-     setTopSpacerHeight(prevTop => {
-       if (Math.abs(prevTop - topPadding) > 10 ) {
-         return topPadding;
-       }
-       return prevTop;
-     });
+    // Обновляем высоту верхнего отступа с пороговым значением (10px)
+    // для предотвращения частых перерисовок при незначительных изменениях
+    setTopSpacerHeight(prevTop => {
+      if (Math.abs(prevTop - topPadding) > 10) {
+        return topPadding;
+      }
+      return prevTop;
+    });
 
      if (startIndex !== endIndex) {
       setVisibleItems(itemsRef.current.slice(startIndex, endIndex));
