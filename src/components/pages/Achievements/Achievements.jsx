@@ -102,49 +102,7 @@ const Achievements = () => {
       (topSpacerHeight + (endIndex - startIndex) / itemsPerRow * (itemHeight + itemsGap * 2)))
     );
     isLoadingVirtualise.current=false;
-  // }
-    // setMainContainerHeight(Math.floor(
-    //   (endIndex - startIndex) / itemsPerRow * (itemHeight + itemsGap * 2)*1.2
-    // ));
-        
-// console.log(startIndex,endIndex,scrollTop)
-
-        // setVisibleItems((prev) => {
-        //   //const amountItems = items.length;
-        //   if (itemsRef.current.length === 0) return prev;
-          
-         
-        //   setTopSpacerHeight((pre) => {
-         
-        //       isLoadingVirtualise.current = true;
-        //     const newPadding = Math.max(0,Math.floor(((startIndex / itemsPerRow) * itemHeight) ));
-        //     console.log(":::",startIndex,newPadding,scrollTop)
-        //     // if(newPadding > scrollTop) return (scrollTop);
-          
-            
-        //     // if(bottomScroll<itemHeight){
-        //     //   startIndex-=itemsPerRow;
-        //     //   endIndex +=itemsPerRow;
-             
-        //     //   return pre
-        //     //  }
-        //     // else
-          
-        //      if ( Math.abs(newPadding - pre) > 10 ) {
-           
-             
-        //       return newPadding;
-        //     }
-        //     // return pre;
-         
-        //   return pre;
-        //   });
-
-        //   isLoadingVirtualise.current = false;
-        //   return itemsRef.current.slice(startIndex, endIndex);
-        // });
-        
-
+  
     
   }
   async function fetchData(page = 1, limit = 30) {
