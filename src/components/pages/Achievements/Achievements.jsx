@@ -5,108 +5,20 @@ import "/src/styles/Achievements.css";
 import trophy from "/src/assets/trophy.svg";
 
 const Achievements = () => {
-  const currentPageRef = useRef(1);
+  const [startVisibleItems, setStartVisibleItems] = useState(0);
+  const [itemHeight, setItemHeight] = useState(180); // Default height, will be updated
+  const [visibleItems,setVisibleItems] = useState([]);
+  const [top,setTop] = useState(0);
+  const [isLoading,setLoading] = useState(false);
+  const items = useRef([]);
+  const paginationPage = useRef(1);
 
-  const itemsRef = useRef([]);
+  const containerRef = useRef(null);
+  const scrollref = useRef(null);
+  const numItemsPerRow = useRef(0);
+  const numVisibleRows = useRef(4);
 
-  const observer = useRef();
-  const lastItemRef = useRef([]);
-  const isLoadingRef = useRef(false);
-
-  const scrollRef = useRef();
-  const [topSpacerHeight, setTopSpacerHeight] = useState(0);
-  const [bottomSpacerHeight, setbottomSpacerHeight] = useState(0);
-
-  const [visibleItems, setVisibleItems] = useState([...itemsRef.current]);
-  const animationFrameId = useRef();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-
-      animationFrameId.current = requestAnimationFrame(() => {
-        virtualisation();
-      });
-    };
-
-    if (scrollRef.current) {
-      scrollRef.current.addEventListener("scroll", handleScroll);
-      virtualisation(); // Initial call
-    }
-
-    return () => {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [itemsRef.current]);
-
-  const isLoadingVirtualise = useRef(false);
-
-  function virtualisation() {
-    const scrollTop = Math.floor(scrollRef.current.scrollTop);
-    const visibleHeight = Math.floor(scrollRef.current.clientHeight);
-    const visibleWidth = Math.floor(scrollRef.current.clientWidth);
-
-    const itemHeight = 180; // Высота одного элемента (примерно)
-    const itemsGap = 8;
-    const itemsPerRow = Math.floor(visibleWidth / (itemHeight+itemsGap)); // Высота одного элемента (примерно)
-
-    // if(!isLoadingVirtualise.current){
-      isLoadingVirtualise.current=true;
-    // Вычисляем индексы видимых элементов
-    const startRow = Math.max(0, Math.floor(scrollTop / (itemHeight + itemsGap)) - 2);
-    const visibleRowCount = Math.ceil(visibleHeight / (itemHeight + itemsGap)) + 4;
-
-    const startIndex = Math.min(
-      Math.max(0, startRow * itemsPerRow),
-      Math.max(0, itemsRef.current.length - 1)
-    );
-    
-    // Вычисляем конец диапазона видимых элементов
-    const endIndex = Math.min(
-      startIndex + visibleRowCount * itemsPerRow,
-      itemsRef.current.length
-    );
-    
-    // Рассчитываем общую высоту контейнера и текущее положение прокрутки
-    const totalHeight = Math.floor(scrollRef.current.scrollHeight);
-    const bottomScroll = totalHeight - scrollTop - visibleHeight;
-    
-    // Вычисляем отступ сверху для виртуализированного скролла
-    // Умножаем номер начальной строки на высоту элемента с учетом отступа
-    const topPadding = Math.max(0, startRow * (itemHeight + itemsGap));
-    
-    // Обновляем высоту верхнего отступа с пороговым значением (10px)
-    // для предотвращения частых перерисовок при незначительных изменениях
-    setTopSpacerHeight(prevTop => {
-      if (Math.abs(prevTop - topPadding) > 10) {
-        return topPadding;
-      }
-      return prevTop;
-    });
-
-     if (startIndex !== endIndex) {
-      setVisibleItems(itemsRef.current.slice(startIndex, endIndex));
-    }
-
-    const totalItems = itemsRef.current.length;
-    const totalRows = Math.ceil(totalItems / itemsPerRow);
-    setbottomSpacerHeight(Math.max(0, 
-      totalRows * (itemHeight + itemsGap * 2) - 
-      (topSpacerHeight + (endIndex - startIndex) / itemsPerRow * (itemHeight + itemsGap * 2)))
-    );
-    isLoadingVirtualise.current=false;
-  
-    
-  }
-  async function fetchData(page = 1, limit = 30) {
-    let newData = [];
+  async function fetchDataIncrementally(page = 1, limit = 40) {
     console.log("Fetching page:", page);
 
     try {
@@ -122,180 +34,160 @@ const Achievements = () => {
 
       const paginatedData = data.slice(startIndex, endIndex);
 
-      paginatedData.forEach((item) => {
-        newData.push(
-          <>
-            <img
-              key={uuidv4()}
-              src={trophy}
-              className="achievements-list__trophy "
-            />
-            <div className="item">
-              <div className="item__name">
-                {item.name} {item.id}
-              </div>
-              <div className="item__description">{item.description}</div>
-              <div className="item__rarity">{item.rarity}</div>
-            </div>
-          </>
-        );
-      });
+      return paginatedData;
     } catch (error) {
       console.error("Error fetching achievements:", error);
       return [];
     }
-
-    //  if(newData.length<0) currentPageRef.current -= 1;
-
-    if (newData.length > 0) {
-      currentPageRef.current += 1;
-      console.log(
-        "newData.length: ",
-        newData[0].props.children[1].props.children[0].props.children
-      );
-    } else {
-      currentPageRef.current += 1;
-      for (let i = 0; i < 20; i++) {
-        // Add 5 elements
-        newData.push(
-          <img
-            key={uuidv4()}
-            src={trophy}
-            className="achievements-list__trophy "
-          />
-        );
+  }
+  function infinityScroll() {
+    fetchDataIncrementally(paginationPage.current).then((newItems) => {
+      if (newItems.length > 0) {
+        let oldItems = items.current.length;
+        newItems.forEach((item) => {
+          if (!items.current.some(existingItem => existingItem.id === item.id)) {
+            items.current.push(item);
+          
+          }else console.log("same item")
+        });
+        console.log("items length: ", items.current.length);
+        if(oldItems < items.current.length){ 
+          paginationPage.current += 1;
+        }
+        virtualizer();
+      }else{
+        console.log("No more data");
+        
       }
-      // virtualisation();
-    }
-    return newData;
+    
+    });
+    // console.log("infinityScroll");
   }
 
-  const loadMoreItems = () => {
-    if (!isLoadingRef.current) {
-      isLoadingRef.current = true;
+  function virtualizer() {
+    if (!scrollref.current) return;
 
-      console.log("current: ", currentPageRef.current);
-      
-
-      fetchData(currentPageRef.current).then((newData) => {
-        // Update the ref with new data
-        const isFirstLoad = itemsRef.current.length === 0;
-        itemsRef.current = [...itemsRef.current, ...newData];
-
-        // Update visible items for the first load
-        if (isFirstLoad) {
-          setVisibleItems(itemsRef.current);
-        }
-
-        isLoadingRef.current = false;
-      });
-      // const newItems = Array.from({ length: 20 }, (_, i) => {
-      //   return (
-      //     <img
-      //       key={uuidv4()}
-      //       src={trophy}
-      //       className="achievements-list__trophy"
-      //     />
-      //   );
-      // });
+    const scroll = scrollref.current;
+    numItemsPerRow.current = Math.floor(scroll.clientWidth / itemHeight);
+    numVisibleRows.current = Math.ceil(scroll.clientHeight / (itemHeight-10));
+    
+    if(scrollref.current.scrollTop >=0 ){
+      const start = Math.floor(scrollref.current.scrollTop/itemHeight);
+      setStartVisibleItems(start);
     }
-  };
+   
+    const endVisibleItems = startVisibleItems + numItemsPerRow.current * numVisibleRows.current*2;
 
-  const handleObserver = (entries) => {
-    const lastEntry = entries[0];
-
-    // console.log("observer target: ", lastEntry.target);
-
-    if (lastEntry.isIntersecting) {
-      loadMoreItems();
-      // virtualisation();
-    }
-  };
-  const setLastItemRef = (node) => {
-    // console.log(node);
-    // if (node) {
-    if (node && !lastItemRef.current.includes(node)) {
-      lastItemRef.current.push(node);
-
-      // console.log("node: ", node);
-      let last = lastItemRef.current.length - 1;
-      // console.log("последний: ", last);
-
-      lastItemRef.current[last].style.border = "5px solid red";
-      if (observer.current) observer.current.observe(lastItemRef.current[last]);
-    }
-
-    if (
-      lastItemRef.current.length - 2 >= 0 &&
-      lastItemRef.current[lastItemRef.current.length - 2]
-    ) {
-      lastItemRef.current[lastItemRef.current.length - 2].style.border =
-        "5px solid black";
-      if (observer.current) {
-        observer.current.unobserve(
-          lastItemRef.current[lastItemRef.current.length - 2]
-        );
-        lastItemRef.current[0].style.border = "5px solid purple";
-        lastItemRef.current.shift();
-      }
-    }
-    //else console.log("NODE == 0   ----> ", node);
-  };
+      setVisibleItems(items.current.slice(
+        startVisibleItems,
+        endVisibleItems
+      ));
+  //  console.log("vis ===",visibleItems)
+  }
+ 
   useEffect(() => {
-    // console.log("++++++++++++++++++запущен обсервер");
-    observer.current = new IntersectionObserver(handleObserver);
-    if (itemsRef.current.length === 0) {
-      loadMoreItems(); // Загружаем только если данных еще нет
-      // setLastItemRef(null); // Инициализируем lastItemRef
-    }
-
-    if (lastItemRef.current[0]) {
-      console.log("lastItemRef.current[0]: ", lastItemRef.current[0]);
-
-      observer.current.observe(lastItemRef.current[0]);
-    }
-    // scrollRef.current.addEventListener("scroll", virtualisation);
+  //  console.log("AAAAAAAAAAAAAAA, startVisibleItems: ", startVisibleItems);
+    
+   infinityScroll();
+   virtualizer();
+ 
+    const scroll = scrollref.current; 
+    if(scroll){
+      scroll.addEventListener("scroll",()=>{
+        if(scroll.scrollTop!=top){
+          setTop(scroll.scrollTop)
+          
+        }
+    })
     return () => {
-      // if (scrollRef.current)
-      // scrollRef.current.removeEventListener("scroll", virtualisation);
-      if (lastItemRef.current[0] && observer.current) {
-        observer.current.unobserve(lastItemRef.current[0]);
-      }
-      observer.current.disconnect();
-      // console.log("--------------------дисконект обсервер");
+        scroll.removeEventListener("scroll", ()=>{
+          if(scroll.scrollTop!=top){
+            setTop(scroll.scrollTop)
+          
+          }
+      });
     };
-  }, []); //lastItemRef.current
+  }
+  }, [top]);
+
+
+  // Create a ref to measure the first rendered Achievement
+  const firstItemRef = useRef(null);
+
+  // Measure the height of the first rendered item
+  useEffect(() => {
+    if (firstItemRef.current && visibleItems.length > 0) {
+      const height = firstItemRef.current.getBoundingClientRect().height;
+      setItemHeight(height);
+      // console.log('Achievement item height:', height);
+    }
+  }, [visibleItems]);
+
   return (
-    <div className="achievments" ref={scrollRef}>
-      <div style={{ height: `${topSpacerHeight}px`,
-          width: '100%',
-          pointerEvents: 'none' }}></div>
-      <div className="achievements-list" >
+    <div className="achievments" ref={scrollref}>
+      <div
+        className="spacer"
+        style={{
+          height: `${top < startVisibleItems*itemHeight ? top : startVisibleItems*itemHeight}px`,
+          width: "100%",
+          pointerEvents: "none",
+        }}
+      ></div>
+      <div className="achievements-list" ref={containerRef}>
         {visibleItems.map((item, index) => {
-          return (
-            <div
-              className="achievements-list__elements"
-              key={index}
-              ref={
-                 index  === visibleItems.length - 1 ? setLastItemRef : null
-              }
-            >
-              {item}
-            </div>
-          );
+          // Only measure the first item
+          const ref = index === 0 ? firstItemRef : null;
+          return <Achievement key={uuidv4()} ref={ref} item={item} />;
         })}
-      
-        {/* <span ref={setLastItemRef} style={{marginTop:`112rem`,position:`absolute`}}></span> */}
       </div>
-      {/* {bottomSpacerHeight > 0 && (
-        <div  style={{ 
-          height: `${bottomSpacerHeight}px`,
-          width: '100%',
-          pointerEvents: 'none'
-        }} />
-      )} */}
     </div>
   );
 };
 
+const Achievement = React.forwardRef(({ item }, ref) => {
+  let rarityColor = 0;
+  switch (item.rarity) {
+    case "common":
+      rarityColor = "dimgray";
+      break;
+    case "uncommon":
+      rarityColor = "darkgreen";
+      break;
+    case "rare":
+      rarityColor = "royalblue";
+      break;
+    case "epic":
+      rarityColor = "mediumvioletred";
+      break;
+    case "legendary":
+      rarityColor = "darkorange";
+      break;
+    default:
+      rarityColor = "black";
+  }
+  return (
+    <div
+      ref={ref}
+      className="achievements-list__elements"
+      style={{ padding: "20px", borderColor: rarityColor }}
+    >
+      <img src={trophy} className="achievements-list__trophy " />
+      <div className="item">
+        <p className="item__name" style={{ color: "black" }}>
+          {item.name} {item.id}
+        </p>
+        <p
+          className="item__description"
+          style={{ color: "black", textOverflow: "ellipsis" }}
+        >
+          {item.description}
+        </p>
+        <p className="item__rarity" style={{ color: rarityColor }}>
+          {item.rarity}
+        </p>
+       
+      </div>
+    </div>
+  );
+});
 export default Achievements;
