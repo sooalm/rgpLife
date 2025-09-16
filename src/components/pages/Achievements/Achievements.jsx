@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useLayoutEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import "/src/styles/Achievements.css";
@@ -6,19 +6,21 @@ import trophy from "/src/assets/trophy.svg";
 
 const Achievements = () => {
   const [startVisibleItems, setStartVisibleItems] = useState(0);
-  const [itemHeight, setItemHeight] = useState(180); // Default height, will be updated
-  const [visibleItems,setVisibleItems] = useState([]);
-  const [top,setTop] = useState(0);
-  const [isLoading,setLoading] = useState(false);
+  const [visibleItems, setVisibleItems] = useState([]);
   const items = useRef([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [top, setTop] = useState(0);
+
   const paginationPage = useRef(1);
 
   const containerRef = useRef(null);
   const scrollref = useRef(null);
   const numItemsPerRow = useRef(0);
   const numVisibleRows = useRef(4);
+  const itemHeight = useRef(0);
+  const itemWidth = useRef(0);
 
-  async function fetchDataIncrementally(page = 1, limit = 40) {
+  async function fetchDataIncrementally(page=1 , limit = 20) {
     console.log("Fetching page:", page);
 
     try {
@@ -32,6 +34,7 @@ const Achievements = () => {
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
 
+      
       const paginatedData = data.slice(startIndex, endIndex);
 
       return paginatedData;
@@ -41,110 +44,134 @@ const Achievements = () => {
     }
   }
   function infinityScroll() {
-    fetchDataIncrementally(paginationPage.current).then((newItems) => {
-      if (newItems.length > 0) {
-        let oldItems = items.current.length;
-        newItems.forEach((item) => {
-          if (!items.current.some(existingItem => existingItem.id === item.id)) {
-            items.current.push(item);
-          
-          }else console.log("same item")
-        });
-        console.log("items length: ", items.current.length);
-        if(oldItems < items.current.length){ 
-          paginationPage.current += 1;
-        }
-        virtualizer();
-      }else{
-        console.log("No more data");
-        
-      }
-    
+    if (isLoading) return; // Prevent multiple simultaneous fetches
+    setIsLoading(true);
+
+    const currentPage = paginationPage.current;
+    fetchDataIncrementally(currentPage).then((newItems) => {
+     if (newItems.length === 0) {
+      console.log('No more items to load');
+      return;
+       }
+       newItems.forEach(item => {
+      if( !items.current.some(existingItem => existingItem.id === item.id)){
+        paginationPage.current = currentPage + 1;
+        setIsLoading(false);
+        items.current = [...items.current, ...newItems];
+     
+      }else setIsLoading(false);
     });
-    // console.log("infinityScroll");
-  }
-
+    }).catch(error => {
+      console.error('Error loading items:', error);
+      setIsLoading(false);
+    });
+}
   function virtualizer() {
-    if (!scrollref.current) return;
-
     const scroll = scrollref.current;
-    numItemsPerRow.current = Math.floor(scroll.clientWidth / itemHeight);
-    numVisibleRows.current = Math.ceil(scroll.clientHeight / (itemHeight-10));
-    
-    if(scrollref.current.scrollTop >=0 ){
-      const start = Math.floor(scrollref.current.scrollTop/itemHeight);
-      setStartVisibleItems(start);
-    }
-   
-    const endVisibleItems = startVisibleItems + numItemsPerRow.current * numVisibleRows.current*2;
+      if(scroll){
+        const height = itemHeight.current|| 180;
+        const width = itemWidth.current || 170;
+        // console.log(height,width)
+        
+        numItemsPerRow.current = Math.floor(scroll.clientWidth / width);
+        numVisibleRows.current = Math.ceil(scroll.clientHeight / height)+2;
+       
+        // console.log(   numItemsPerRow.current,numVisibleRows.current);
 
-      setVisibleItems(items.current.slice(
-        startVisibleItems,
-        endVisibleItems
-      ));
-  //  console.log("vis ===",visibleItems)
+        const scrollTop= scroll.scrollTop; 
+        setTop(prev=>prev!=scrollTop?scrollTop:prev);
+        const totalVisibleItems = numItemsPerRow.current * numVisibleRows.current;
+     
+        let start = scrollTop === 0 ? 0 : Math.min(Math.floor(scrollTop / height) * numItemsPerRow.current,
+        items.current.length - Math.floor(scroll.clientWidth / width)*Math.ceil(scroll.clientHeight / height));
+        
+        const end = Math.min(items.current.length, start + totalVisibleItems);
+
+        const data = items.current.slice(start, end);
+        console.log("ВЫЗООООООВ: ",items.current.length,start, end)
+        setVisibleItems(data);
+        setStartVisibleItems(start);
+    } 
   }
- 
+
   useEffect(() => {
-  //  console.log("AAAAAAAAAAAAAAA, startVisibleItems: ", startVisibleItems);
-    
-   infinityScroll();
-   virtualizer();
- 
-    const scroll = scrollref.current; 
-    if(scroll){
-      scroll.addEventListener("scroll",()=>{
-        if(scroll.scrollTop!=top){
-          setTop(scroll.scrollTop)
-          
-        }
-    })
-    return () => {
-        scroll.removeEventListener("scroll", ()=>{
-          if(scroll.scrollTop!=top){
-            setTop(scroll.scrollTop)
-          
-          }
+  //  console.log("virt: ",items.current.length)
+      
+      requestAnimationFrame(() => {
+        virtualizer();
       });
-    };
-  }
-  }, [top]);
+    // console.log("Items updated, length:", items.length,visibleItems);
+  }, [isLoading,top]);
 
-
-  // Create a ref to measure the first rendered Achievement
-  const firstItemRef = useRef(null);
-
-  // Measure the height of the first rendered item
+  // Initial data load
   useEffect(() => {
-    if (firstItemRef.current && visibleItems.length > 0) {
-      const height = firstItemRef.current.getBoundingClientRect().height;
-      setItemHeight(height);
-      // console.log('Achievement item height:', height);
+   
+    if (items.current.length === 0) {
+      console.log('Initial data loading...');
+  
+      requestAnimationFrame(() => {
+        infinityScroll();
+      });
+     
     }
-  }, [visibleItems]);
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollref.current;
+      // Load more when scrolled to 70% of the container
+      const scrollThreshold = 0.7;
+      requestAnimationFrame(virtualizer);
+      if (scrollTop + clientHeight >= scrollHeight * scrollThreshold 
+       ) {
+        requestAnimationFrame(() => {
+          infinityScroll();
+          // virtualizer();
+        });
+      }
+    };
+  
+    const scroll = scrollref.current;
+    if (scroll) {
+      // Using passive: true for better performance
+      scroll.addEventListener('scroll', handleScroll, { passive: true });
+      return () => {
+        scroll.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, []);
+ 
 
+  const handleFirstItemRef = (node) => {
+    if (node !== null) {
+      const { height,width } = node.getBoundingClientRect();
+      itemHeight.current = height;
+      itemWidth.current = width;  
+    }
+  };
+  
   return (
     <div className="achievments" ref={scrollref}>
       <div
         className="spacer"
         style={{
-          height: `${top < startVisibleItems*itemHeight ? top : startVisibleItems*itemHeight}px`,
+          height: `${Math.floor(startVisibleItems/numItemsPerRow.current)* (itemHeight.current || 170)}px`,
           width: "100%",
           pointerEvents: "none",
         }}
       ></div>
       <div className="achievements-list" ref={containerRef}>
-        {visibleItems.map((item, index) => {
-          // Only measure the first item
-          const ref = index === 0 ? firstItemRef : null;
-          return <Achievement key={uuidv4()} ref={ref} item={item} />;
-        })}
+        {visibleItems.map((item, index) => (
+          <Achievement 
+            key={uuidv4()} 
+            item={item} 
+            ref={index === 0 ? handleFirstItemRef : null} 
+          />
+        ))}
       </div>
     </div>
   );
 };
 
 const Achievement = React.forwardRef(({ item }, ref) => {
+  
   let rarityColor = 0;
   switch (item.rarity) {
     case "common":
@@ -167,12 +194,11 @@ const Achievement = React.forwardRef(({ item }, ref) => {
   }
   return (
     <div
-      ref={ref}
       className="achievements-list__elements"
       style={{ padding: "20px", borderColor: rarityColor }}
     >
       <img src={trophy} className="achievements-list__trophy " />
-      <div className="item">
+      <div className="item" >
         <p className="item__name" style={{ color: "black" }}>
           {item.name} {item.id}
         </p>
@@ -185,9 +211,9 @@ const Achievement = React.forwardRef(({ item }, ref) => {
         <p className="item__rarity" style={{ color: rarityColor }}>
           {item.rarity}
         </p>
-       
       </div>
     </div>
   );
+  
 });
 export default Achievements;
