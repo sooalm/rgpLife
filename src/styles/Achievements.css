@@ -11,12 +11,15 @@
   /* box-sizing: border-box; */
 
   overflow: auto;
-
+  /* transition: all 0.7s ease-in-out; */
   /* scrollbar-width: none; firefox
   &::-webkit-scrollbar {
    google,safari
     display: none;
    }*/
+
+   /* will-change: transform;
+  transition: transform 0.7s ease-in-out; */
 }
 .achievements-list {
   display: flex;
@@ -30,20 +33,22 @@
 
   place-items: center;
   justify-content: space-evenly;
-
-  position: relative;
+  
+  /* will-change: transform;
+  transition: transform 0.7s ease-in-out; */
 }
 .achievements-list__elements {
+  
   border: 3px solid rgba(255, 166, 0, 0.741);
   border-radius: 8px;
-
-  /* width: 150px;
-  height: 100px; */
-  padding: 20px 30px 20px 30px;
+  padding: 20px 30px;
   width: 120px;
   height: 130px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
+  margin-bottom: 1rem;
+
+  
   /* display: flex;
   flex-grow: 0;*/
   /* justify-content: center; */
@@ -68,9 +73,16 @@
   color: rgb(213, 184, 17);
 }
 .item__description {
-  font-family: cursive;
   font-size: smaller;
+  font-family: cursive;
   height: 40px;
+  display: -webkit-box;
+ -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1em; /* Adjust this based on your font size */
+  max-height: 2rem; /* line-height * number of lines */
 }
 .item__rarity {
   color: purple;
