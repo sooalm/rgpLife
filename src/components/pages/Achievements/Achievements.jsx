@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect,useCallback} from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import "/src/styles/Achievements.css";
@@ -9,7 +9,7 @@ const Achievements = () => {
   const [visibleItems, setVisibleItems] = useState([]);
   const items = useRef([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [top, setTop] = useState(0);
+  const [spacer, setSpacer] = useState(0);
 
   const paginationPage = useRef(1);
 
@@ -19,6 +19,9 @@ const Achievements = () => {
   const numVisibleRows = useRef(4);
   const itemHeight = useRef(0);
   const itemWidth = useRef(0);
+
+  const start = useRef(0);
+  const end = useRef(42);
 
   async function fetchDataIncrementally(page=1 , limit = 20) {
     console.log("Fetching page:", page);
@@ -44,6 +47,7 @@ const Achievements = () => {
     }
   }
   function infinityScroll() {
+    // if(items.current.length==0) setTop(1);
     if (isLoading) return; // Prevent multiple simultaneous fetches
     setIsLoading(true);
 
@@ -66,33 +70,49 @@ const Achievements = () => {
       setIsLoading(false);
     });
 }
-  function virtualizer() {
+  // Throttle the virtualizer function to reduce recalculations
+  const virtualizer = useCallback(() => {
+    if (!scrollref.current) return;
+    
     const scroll = scrollref.current;
-      if(scroll){
-        const height = itemHeight.current|| 180;
-        const width = itemWidth.current || 170;
-        // console.log(height,width)
+    
+      const height = itemHeight.current || 180;
+      const width = itemWidth.current || 170;
+      
+      numItemsPerRow.current = Math.max(1, Math.round(scroll.clientWidth / width));
+      numVisibleRows.current = Math.ceil(scroll.clientHeight / height); // Add extra row for smoother scrolling
+      
+      const scrollTop = scroll.scrollTop;
+      // setTop(prev => prev !== scrollTop ? scrollTop : prev);
+      
+      
+      const totalVisibleItems = numItemsPerRow.current * (numVisibleRows.current + 1); // Add buffer for smooth scrolling
+      
+      const totalRows = Math.ceil(items.current.length / numItemsPerRow.current);
+      const maxScroll = totalRows * height - scroll.clientHeight;
+      
+      // Calculate start index based on scroll position
+      //костыльный if который не дает ререндерить когда мы в самомо неизу и тем самым исправляет этот дерганый баг
+      // if(start.current >  Math.max(Math.floor(scrollTop / height) * numItemsPerRow.current) && end.current== Math.min(items.current.length, start.current+totalVisibleItems+start.current)){
         
-        numItemsPerRow.current = Math.floor(scroll.clientWidth / width);
-        numVisibleRows.current = Math.ceil(scroll.clientHeight / height)+2;
-       
-        // console.log(   numItemsPerRow.current,numVisibleRows.current);
-
-        const scrollTop= scroll.scrollTop; 
-        setTop(prev=>prev!=scrollTop?scrollTop:prev);
-        const totalVisibleItems = numItemsPerRow.current * numVisibleRows.current;
+      
      
-        let start = scrollTop === 0 ? 0 : Math.min(Math.floor(scrollTop / height) * numItemsPerRow.current,
-        items.current.length - Math.floor(scroll.clientWidth / width)*Math.ceil(scroll.clientHeight / height));
         
-        const end = Math.min(items.current.length, start + totalVisibleItems);
+        start.current = Math.floor(scrollTop / height) * numItemsPerRow.current ;
+      
+      // Calculate end index, ensuring we don't go past the end of the array
+      
+       end.current =  Math.min(items.current.length, start.current+totalVisibleItems+start.current);
+        setSpacer(prev=>Math.floor(scrollTop- start.current*height ));
+    // }
+      console.log(items.current.length,scrollTop,spacer,"start",start.current,"end",end.current);
 
-        const data = items.current.slice(start, end);
-        console.log("ВЫЗООООООВ: ",items.current.length,start, end)
-        setVisibleItems(data);
-        setStartVisibleItems(start);
-    } 
-  }
+      const data = items.current.slice(start.current, end.current);
+      setVisibleItems(data);
+      setStartVisibleItems(prev=>prev!=start.current?start.current:prev);
+      
+    
+  })
 
   useEffect(() => {
   //  console.log("virt: ",items.current.length)
@@ -101,7 +121,7 @@ const Achievements = () => {
         virtualizer();
       });
     // console.log("Items updated, length:", items.length,visibleItems);
-  }, [isLoading,top]);
+  }, [isLoading]);
 
   // Initial data load
   useEffect(() => {
@@ -152,7 +172,8 @@ const Achievements = () => {
       <div
         className="spacer"
         style={{
-          height: `${Math.floor(startVisibleItems/numItemsPerRow.current)* (itemHeight.current || 170)}px`,
+          // height: `${Math.floor(startVisibleItems/numItemsPerRow.current)* (itemHeight.current || 170)}px`,
+          height: `${spacer}px`,
           width: "100%",
           pointerEvents: "none",
         }}
@@ -166,6 +187,15 @@ const Achievements = () => {
           />
         ))}
       </div>
+      <div
+        className="spacerBot"
+        style={{
+          height: `${10}px`,
+          width: "100%",
+          pointerEvents: "none",
+          visibility: "hidden"
+        }}
+      ></div>
     </div>
   );
 };
@@ -200,11 +230,11 @@ const Achievement = React.forwardRef(({ item }, ref) => {
       <img src={trophy} className="achievements-list__trophy " />
       <div className="item" >
         <p className="item__name" style={{ color: "black" }}>
-          {item.name} {item.id}
+          {item.name } 
         </p>
         <p
           className="item__description"
-          style={{ color: "black", textOverflow: "ellipsis" }}
+          style={{ color: "black" }}
         >
           {item.description}
         </p>
