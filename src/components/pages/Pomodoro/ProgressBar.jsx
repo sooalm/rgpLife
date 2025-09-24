@@ -1,16 +1,27 @@
 import React from "react";
 import { useState, useEffect, useContext, useRef } from "react";
+import { useDispatch } from "react-redux";
 import "../../../styles/ProgressBar.css";
-
+import { useSelector } from "react-redux";
 // import { ImCheckmark2 } from "react-icons/im";
 import { TimeContext } from "./TimeContextProvider";
+import { updateTask } from "../../redux/slices/tasksSlice";
 
 const ProgressBar = () => {
-  const [time, setTime] = useState(25 * 60);
-  const [initiallTime, setInitiallTime] = useState(25 * 60);
+  const dispatch = useDispatch();
+  const [time, setTime] = useState(25 * 60); //время в секундах, то что будет идти и меняться
+  const [initiallTime, setInitiallTime] = useState(25 * 60); //время с которого начался отсчет
 
-  const [percent, setPercent] = useState(0);
+  const [percent, setPercent] = useState(0); //процент прогресса
   const { sharedDataTime, setSharedDataTime } = useContext(TimeContext); //время что назначенно инпутами
+
+  const selectedRef = useRef(null);
+  const [isSelectDisabled, setIsSelectDisabled] = useState(false); // Используем состояние
+  function handleSelectChange(event) {
+    const selectedId = event.target.value;
+
+    selectedRef.current = selectedId;
+  }
 
   let intervalId = useRef(null);
   useEffect(() => {
@@ -36,9 +47,21 @@ const ProgressBar = () => {
   function timeCount(initiallSeconds, secondsAll) {
     console.log(`timeCount`);
     setTime(secondsAll);
+
+    const shouldDisable = secondsAll > 0 && secondsAll !== initiallSeconds;
+    setIsSelectDisabled(shouldDisable);
     if (secondsAll <= 0) {
       console.log("finish");
       // setTime(`finish`);
+
+      dispatch(
+        updateTask({
+          id: selectedRef.current,
+          experience: (initiallSeconds / 60 / 25).toFixed(3) * 250,
+        })
+      );
+      setIsSelectDisabled(false); // Разблокируем при завершени
+
       setPercent(100);
       clearInterval(intervalId.current);
     } else {
@@ -88,6 +111,7 @@ const ProgressBar = () => {
     }
   }, [sharedDataTime]);
 
+  const tasks = useSelector((state) => state.tasks.tasks);
   return (
     <>
       <div
@@ -116,6 +140,21 @@ const ProgressBar = () => {
           className="pomodoro-container__startButton pomodoro-container__startButton--reset"
         ></button>
       </div>
+      <select
+        onChange={handleSelectChange}
+        name="selectedItem"
+        disabled={isSelectDisabled}
+      >
+        {tasks && tasks.length > 0 ? (
+          tasks.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.title}
+            </option>
+          ))
+        ) : (
+          <option value="">Без задач</option>
+        )}
+      </select>
     </>
   );
 };

@@ -1,0 +1,48 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+}
+.flex-row--gap {
+  gap: 1rem;
+}
+.tasks {
+  margin-top: 3rem;
+
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+.experience-bar {
+  border-radius: 15px;
+  width: 300px;
+  height: 15px;
+  border: 1px solid black;
+
+  font-size: 12px;
+}
+.experience-bar__lvl {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 25px;
+
+  color: white;
+  background-color: gold;
+
+  border: 1px solid white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+.label-bar {
+}
+.task__form {
+  margin-top: 1rem;
+  margin-left: 100px;
+
+  display: flex;
+  justify-content: center;
+  place-items: center;
+}

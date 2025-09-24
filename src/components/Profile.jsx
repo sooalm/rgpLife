@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import avatar_IMG from "../assets/joePeach.png";
 import learning_IMG from "../assets/traits/icon_learning.png";
@@ -7,6 +8,8 @@ import rating_IMG from "../assets/traits/Event_trigger.png";
 import "../styles/Profile.css";
 
 const Profile = () => {
+  const allExp = useSelector((state) => state.tasks.generalExperience);
+
   return (
     <div className="profile-card ">
       <img src={avatar_IMG} className="profile-card__img"></img>
@@ -16,7 +19,7 @@ const Profile = () => {
         <div className="profile-row">
           <img src={learning_IMG} className="profile-row__img"></img>
           <span className="profile-row__line">Опыт:</span>
-          <span className="profile-row__line"> 3</span>
+          <span className="profile-row__line"> {allExp} exp</span>
         </div>
         <div className="profile-row">
           <img
