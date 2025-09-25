@@ -19,7 +19,7 @@ const ProgressBar = () => {
   const [isSelectDisabled, setIsSelectDisabled] = useState(false); // Используем состояние
   function handleSelectChange(event) {
     const selectedId = event.target.value;
-
+    // console.log("отработал селект",selectedId);
     selectedRef.current = selectedId;
   }
 
@@ -111,6 +111,12 @@ const ProgressBar = () => {
     }
   }, [sharedDataTime]);
 
+  useEffect(() => {
+    if (tasks && tasks.length > 0) {
+       handleSelectChange({target: { value: tasks[0].id }});  
+    }
+  },[])
+
   const tasks = useSelector((state) => state.tasks.tasks);
   return (
     <>
@@ -151,9 +157,10 @@ const ProgressBar = () => {
               {item.title}
             </option>
           ))
+         
         ) : (
           <option value="">Без задач</option>
-        )}
+        ) }
       </select>
     </>
   );

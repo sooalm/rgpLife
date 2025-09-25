@@ -34,12 +34,12 @@ const Tasks = () => {
     <div className="tasks flex-column">
       {tasks.map((item) => {
         // const expTotal = item.level * 1000;
-
+        const uniqueId = uuidv4();
         return (
           <div key={uuidv4()} className="flex-row flex-row--gap ">
-            <label htmlFor="exp-bar" className="label-bar">
+            <div  className="label-bar">
               {item.title}
-            </label>
+            </div>
             <div id="exp-bar" className="experience-bar ">
               {item.experience}/{item.level * 1000}
             </div>

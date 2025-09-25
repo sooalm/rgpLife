@@ -12,11 +12,11 @@
 
   overflow: auto;
   /* transition: all 0.7s ease-in-out; */
-  scrollbar-width: none;
+  /* scrollbar-width: none; firefox
   &::-webkit-scrollbar {
- 
+   google,safari
     display: none;
-   }
+   }*/
 
    /* will-change: transform;
   transition: transform 0.7s ease-in-out; */
