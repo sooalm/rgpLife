@@ -5,6 +5,7 @@ const tasksSlice = createSlice({
   initialState: {
     tasks: [],
     generalExperience: 0,
+    activeDays: new Map(),
   },
   reducers: {
     addTask(state, action) {
@@ -29,6 +30,14 @@ const tasksSlice = createSlice({
           task.level = Math.floor(task.experience / 1000) + 1;
 
         state.generalExperience += task.experience;
+
+        const data = new Date(); 
+        const startYear = new Date(data.getFullYear(),0,1); 
+        const diff = data - startYear;
+        const day =  Math.floor(diff/(1000*60*60*24)+1);
+        if(activeDays.has(day)){
+          activeDays.set(day,activeDays.get(day)+1);
+        }else activeDays.set(day,1);
       }
     },
   },
