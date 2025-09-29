@@ -1,8 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
 
-import { TimeContext } from "./TimeContextProvider";
-
 import "../../../styles/StartProgress.css";
 const StartProgress = ({ setSharedDataTime }) => {
   // const { setSharedDataTime } = useContext(TimeContext);
@@ -12,11 +10,7 @@ const StartProgress = ({ setSharedDataTime }) => {
   const handleChange = (index) => (event) => {
     const newInputs = [...inputs]; // Копируем текущие значения
     const value = event.target.value;
-    // if (index == 0 && event.target.value > 9) {
-    //   newInputs[index] = 8;
-    // } else {
-    //   newInputs[index] = event.target.value;
-    // }
+
     if (/^\d{0,2}$/.test(value)) {
       newInputs[index] = value;
     }
