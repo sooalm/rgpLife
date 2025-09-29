@@ -13,7 +13,6 @@ const Pomodoro = () => {
       <div className="pomodoro-container">
         <TimeContextProvider>
           <ProgressBar />
-          <StartProgress />
         </TimeContextProvider>
         {/* <img src={gearsLogo} className="logo" alt="Under construction" /> */}
       </div>

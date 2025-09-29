@@ -1,10 +1,11 @@
 import React from "react";
 import { useState, useEffect, useContext, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "../../../styles/ProgressBar.css";
-import { useSelector } from "react-redux";
+
+import StartProgress from "./StartProgress";
 // import { ImCheckmark2 } from "react-icons/im";
-import { TimeContext } from "./TimeContextProvider";
+// import { TimeContext } from "./TimeContextProvider";
 import { updateTask } from "../../redux/slices/tasksSlice";
 
 const ProgressBar = () => {
@@ -13,7 +14,8 @@ const ProgressBar = () => {
   const [initiallTime, setInitiallTime] = useState(25 * 60); //время с которого начался отсчет
 
   const [percent, setPercent] = useState(0); //процент прогресса
-  const { sharedDataTime, setSharedDataTime } = useContext(TimeContext); //время что назначенно инпутами
+  // const { sharedDataTime, setSharedDataTime } = useContext(TimeContext);
+  const [sharedDataTime, setSharedDataTime] = useState(false); //время что назначенно инпутами
 
   const selectedRef = useRef(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false); // Используем состояние
@@ -193,6 +195,7 @@ const ProgressBar = () => {
           )}
         </div>
       </div>
+      <StartProgress setSharedDataTime={setSharedDataTime} />
     </>
   );
 };

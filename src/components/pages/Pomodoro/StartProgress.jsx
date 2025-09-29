@@ -4,8 +4,8 @@ import { useState, useContext } from "react";
 import { TimeContext } from "./TimeContextProvider";
 
 import "../../../styles/StartProgress.css";
-const StartProgress = () => {
-  const { setSharedDataTime } = useContext(TimeContext);
+const StartProgress = ({ setSharedDataTime }) => {
+  // const { setSharedDataTime } = useContext(TimeContext);
 
   const [inputs, setInputs] = useState([0, 0, 0]);
 

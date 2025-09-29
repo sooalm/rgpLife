@@ -4,10 +4,11 @@ import React, { createContext, useState } from "react";
 export const TimeContext = createContext(`wihtout provider`);
 
 export const TimeContextProvider = ({ children }) => {
-  const [sharedDataTime, setSharedDataTime] = useState(false);
+  // const [sharedDataTime, setSharedDataTime] = useState(false);
 
   return (
-    <TimeContext.Provider value={{ sharedDataTime, setSharedDataTime }}>
+    <TimeContext.Provider value={{}}>
+      {/* sharedDataTime, setSharedDataTime */}
       {children}
     </TimeContext.Provider>
   );
