@@ -1,11 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import avatar_IMG from "../assets/joePeach.png";
-import learning_IMG from "../assets/traits/icon_learning.png";
-import achievements_IMG from "../assets/traits/Saoshyant.png";
-import rating_IMG from "../assets/traits/Event_trigger.png";
-import "../styles/Profile.css";
+import avatar_IMG from "../../assets/joePeach.png";
+import learning_IMG from "../../assets/traits/icon_learning.png";
+import achievements_IMG from "../../assets/traits/Saoshyant.png";
+import rating_IMG from "../../assets/traits/Event_trigger.png";
+import "../../styles/Profile.css";
 
 const Profile = () => {
   const allExp = useSelector((state) => state.tasks.generalExperience);

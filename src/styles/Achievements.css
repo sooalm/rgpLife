@@ -1,7 +1,6 @@
 .achievments {
   width: 100%;
 
-
   position: absolute;
   top: 1.4rem;
   left: 0;
@@ -11,28 +10,26 @@
   /* box-sizing: border-box; */
 
   overflow: auto;
-  /* transition: all 0.7s ease-in-out; */
-  /* scrollbar-width: none; firefox
+  /* transition: all 0.7s ease-in-out;  */
+  scrollbar-width: none;
   &::-webkit-scrollbar {
-   google,safari
+    /* google,safari */
     display: none;
-   }*/
+  }
 
-   /* will-change: transform;
+  /* will-change: transform;
   transition: transform 0.7s ease-in-out; */
   display: flex;
   place-items: start;
   justify-content: space-evenly;
 }
 .achievements-list {
-
-  width:1050px;
+  width: 1050px;
 
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
 
-  
   flex-wrap: wrap;
 
   margin-top: 1rem;
@@ -40,15 +37,12 @@
 
   place-items: start;
   justify-content: space-evenly;
-  
+
   /* will-change: transform;
   transition: transform 0.7s ease-in-out; */
 }
 
 .achievements-list__elements {
-
-
-
   border: 3px solid rgba(255, 166, 0, 0.741);
   border-radius: 8px;
   padding: 20px 30px;
@@ -58,7 +52,6 @@
 
   /* margin-bottom: 1rem; */
 
-  
   /* display: flex;
   flex-grow: 0;*/
   /* justify-content: center; */
@@ -87,7 +80,7 @@
   font-family: cursive;
   height: 40px;
   display: -webkit-box;
- -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-line-clamp: 3; /* Number of lines to show */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

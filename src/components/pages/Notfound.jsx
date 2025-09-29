@@ -3,8 +3,13 @@ import gearsLogo from "../../assets/gears.svg";
 const Notfound = () => {
   return (
     <div>
-      <h2>Under Construction</h2>
-      <img src={gearsLogo} className="logo" alt="Under construction" />
+      <h2>404 Not Found</h2>
+      <img
+        src={gearsLogo}
+        style={{ width: "250px", height: "250px" }}
+        className="logo"
+        alt="Under construction"
+      />
     </div>
   );
 };

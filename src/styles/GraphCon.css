@@ -2,19 +2,23 @@
   border: 1px solid burlywood;
   border-radius: 10px 10px 0 0;
 
-  max-width: 700px;
+  width: 700px;
   min-width: 300px;
   height: 120px;
+  transition: all 0.3s ease-in-out;
 
-  align-self: center;
+  /* align-self: center; */
   margin-right: 5px;
 
   padding: 0px 5px 5px 0px;
-  background-color: white;
+  background-color: #e7cebf;
 
   overflow-x: auto;
   overflow-y: hidden;
+
+  transform: scale(1.4);
 }
+
 .days {
   max-width: 680px;
 
@@ -27,7 +31,7 @@
 
   padding: 0px 6px 6px 6px;
 
-  background-color: #fff;
+  background-color: #e7cebf;
   border-radius: 4px;
 
   grid-auto-flow: column;
@@ -66,16 +70,71 @@
   color: gray;
   overflow: hidden;
 }
+.weekDay--green {
+  color: #5dff8b;
+}
 .months {
   display: flex;
   flex-direction: row;
 
-  margin-left: 48px;
+  /* margin-left: 48px; */
   margin-top: 0.2rem;
 }
 .month {
-  margin-right: 1.8rem;
+  /* margin-right: 1.8rem; */
   width: 46px;
   color: gray;
   font-size: 8px;
+}
+
+@media (max-width: 1100px) {
+  .graph-table {
+    transform: scale(1.2);
+    height: 100px;
+
+    transition: all 0.3s ease-in-out;
+  }
+  .weekDay {
+    width: 0.6rem;
+    text-overflow: ellipsis;
+  }
+  .month {
+    display: none;
+  }
+}
+@media (max-width: 950px) {
+  .graph-table {
+    transform: scale(1);
+    padding: 0;
+  }
+}
+@media (max-width: 800px) {
+  .graph-table {
+    /* transform: scale(0.5); */
+    height: 140px;
+    width: 460px;
+  }
+  .days {
+    grid-template-rows: repeat(10, 10px);
+    grid-template-columns: repeat(37, 10px);
+  }
+  .weekDay {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .graph-table {
+    height: 420px;
+    min-width: 140px;
+    width: 140px;
+
+    align-self: start;
+    margin-left: 2.2rem;
+  }
+  .days {
+    grid-template-columns: repeat(10, 10px);
+    grid-template-rows: repeat(34, 10px);
+
+    margin: 0;
+  }
 }

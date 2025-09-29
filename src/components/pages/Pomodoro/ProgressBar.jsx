@@ -17,11 +17,6 @@ const ProgressBar = () => {
 
   const selectedRef = useRef(null);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false); // Используем состояние
-  function handleSelectChange(event) {
-    const selectedId = event.target.value;
-    // console.log("отработал селект",selectedId);
-    selectedRef.current = selectedId;
-  }
 
   let intervalId = useRef(null);
   useEffect(() => {
@@ -57,7 +52,7 @@ const ProgressBar = () => {
       dispatch(
         updateTask({
           id: selectedRef.current,
-          experience: (initiallSeconds / 60 / 25).toFixed(3) * 250,
+          experience: (initiallSeconds / 60 / 25).toFixed(3) * 2500,
         })
       );
       setIsSelectDisabled(false); // Разблокируем при завершени
@@ -73,7 +68,7 @@ const ProgressBar = () => {
     }
   }
   function handleTime(secondsAll) {
-    // const initiallSeconds = secondsAll;
+    secondsAll = timeCount(initiallTime, secondsAll);
     intervalId.current = setInterval(() => {
       secondsAll = timeCount(initiallTime, secondsAll);
     }, 1000);
@@ -89,6 +84,7 @@ const ProgressBar = () => {
 
   function handleResetButton() {
     console.log(`reset`);
+    setIsSelectDisabled(false);
     clearInterval(intervalId.current);
     setPercent(0);
     setTime(25 * 60);
@@ -111,13 +107,41 @@ const ProgressBar = () => {
     }
   }, [sharedDataTime]);
 
-  useEffect(() => {
-    if (tasks && tasks.length > 0) {
-       handleSelectChange({target: { value: tasks[0].id }});  
-    }
-  },[])
+  // useEffect(() => {
+  //   if (tasks && tasks.length > 0) {
+  //     handleSelectChange({ target: { value: tasks[0].id } });
+  //   }
+  // }, []);
 
   const tasks = useSelector((state) => state.tasks.tasks);
+
+  const selectedTask = useRef(null);
+  const options = useRef(null);
+
+  function handleSelectChange(id) {
+    const selectedId = id;
+    console.log("selectedId", selectedId);
+    if (!selectedId) return;
+    // console.log("отработал селект",selectedId);
+    selectedRef.current = selectedId;
+  }
+
+  const handleSelectClick = () => {
+    options.current?.classList.toggle("select-hide");
+  };
+
+  const handleOptionClick = (e) => {
+    if (e.target.getAttribute("data-value")) {
+      selectedTask.current.textContent = e.target.textContent;
+      // console.log("ssssssssssss", e.target);
+      const id = e.target.getAttribute("data-value");
+      selectedRef.current = id;
+
+      // handleSelectChange();
+      options.current?.classList.add("select-hide");
+    }
+  };
+
   return (
     <>
       <div
@@ -131,7 +155,6 @@ const ProgressBar = () => {
           This <em>really awesome feature</em> requires JS
         </span>
       </div>
-
       <div className="flex-row flex-row flex-row--mtb-1r">
         <button
           onClick={handlePlayButton}
@@ -146,22 +169,30 @@ const ProgressBar = () => {
           className="pomodoro-container__startButton pomodoro-container__startButton--reset"
         ></button>
       </div>
-      <select
-        onChange={handleSelectChange}
-        name="selectedItem"
-        disabled={isSelectDisabled}
-      >
-        {tasks && tasks.length > 0 ? (
-          tasks.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.title}
-            </option>
-          ))
-         
-        ) : (
-          <option value="">Без задач</option>
-        ) }
-      </select>
+      <div className="custom-select" data-disabled={isSelectDisabled}>
+        <div
+          ref={selectedTask}
+          onClick={handleSelectClick}
+          className="select-selected"
+        >
+          Выберите опцию
+        </div>
+        <div
+          ref={options}
+          onClick={handleOptionClick}
+          className="select-items select-hide"
+        >
+          {tasks && tasks.length > 0 ? (
+            tasks.map((item, index) => (
+              <div className="custom-option" data-value={item.id} key={item.id}>
+                {item.title}
+              </div>
+            ))
+          ) : (
+            <div data-value="">Без задач</div>
+          )}
+        </div>
+      </div>
     </>
   );
 };

@@ -1,7 +1,7 @@
 .profile-card {
   border: solid 1px burlywood;
   border-radius: 15px;
-  background: #c7b99e;
+  background: #e7cebf;
 
   height: 225px;
   width: 190px;
@@ -12,11 +12,17 @@
   margin-left: 1rem;
   margin-top: 1rem;
 }
+@media (max-width: 1400px) {
+  .profile-card {
+    align-self: start;
+  }
+}
 .profile-stats {
   margin-top: 0.5rem;
 
-  border-top: 2px solid #ffd207;
-  border-bottom: 2px solid #ffd207;
+  /* border-top: 2px solid #ffd207; */
+  border-top: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
 
   display: flex;
   flex-direction: column;

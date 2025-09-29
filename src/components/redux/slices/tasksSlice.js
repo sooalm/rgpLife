@@ -5,7 +5,7 @@ const tasksSlice = createSlice({
   initialState: {
     tasks: [],
     generalExperience: 0,
-    activeDays: new Map(),
+    activeDays: {},
   },
   reducers: {
     addTask(state, action) {
@@ -13,8 +13,10 @@ const tasksSlice = createSlice({
       state.generalExperience += action.payload.experience;
     },
     deleteTask(state, action) {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
-      state.generalExperience -= task.experience;
+      const exp = state.tasks.find((item) => item.id === action.payload);
+      if (exp) state.generalExperience -= exp.experience;
+
+      state.tasks = state.tasks.filter((item) => item.id !== action.payload);
     },
     editTask(state, action) {
       const task = state.tasks.find((task) => task.id === action.payload.id);
@@ -23,6 +25,7 @@ const tasksSlice = createSlice({
       }
     },
     updateTask(state, action) {
+      //вызывается после каждого обработанного помидора
       const task = state.tasks.find((task) => task.id === action.payload.id);
       if (task) {
         task.experience += action.payload.experience ?? 0;
@@ -31,13 +34,13 @@ const tasksSlice = createSlice({
 
         state.generalExperience += task.experience;
 
-        const data = new Date(); 
-        const startYear = new Date(data.getFullYear(),0,1); 
+        const data = new Date();
+        const startYear = new Date(data.getFullYear(), 0, 1);
         const diff = data - startYear;
-        const day =  Math.floor(diff/(1000*60*60*24)+1);
-        if(activeDays.has(day)){
-          activeDays.set(day,activeDays.get(day)+1);
-        }else activeDays.set(day,1);
+        const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24) + 1);
+        if (dayOfYear in state.activeDays) {
+          state.activeDays[dayOfYear] = (state.activeDays[dayOfYear] || 0) + 1;
+        } else state.activeDays[dayOfYear] = 1;
       }
     },
   },

@@ -1,18 +1,14 @@
 import React from "react";
-import "../../App.css";
-import gearsLogo from "../../assets/gears.svg";
+import "../../styles/HomePage.css";
 
-import GraphCon from "../GraphCon.jsx";
-import Profile from "../Profile.jsx";
+import GraphCon from "./GraphCon.jsx";
+import Profile from "./Profile.jsx";
 
 const HomePage = () => {
   return (
-    <div className="app-gridContainer">
+    <div className="homepage-flex-row">
       <Profile />
       <GraphCon />
-
-      <h2>Under Construction</h2>
-      <img src={gearsLogo} className="logo" alt="Under construction" />
     </div>
   );
 };

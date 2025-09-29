@@ -1,18 +1,23 @@
+.tasks--flex-column {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+.tasks--gap {
+  gap: 0.3rem;
+}
 .flex-row {
   display: flex;
   flex-direction: row;
 
-  align-items: center;
+  /* align-items: center; */
 }
 .flex-row--gap {
-  gap: 1rem;
+  gap: 0.5rem;
 }
 .tasks {
   margin-top: 3rem;
-
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
 }
 .experience-bar {
   border-radius: 15px;
@@ -21,6 +26,28 @@
   border: 1px solid black;
 
   font-size: 12px;
+
+  position: relative;
+}
+.experience-bar::after {
+  content: "";
+  /* border-radius: inherit; */
+  position: absolute;
+
+  inset: 0;
+
+  width: var(--progress, 0%);
+  border-radius: var(--borderRadius, inherit);
+  scale: var(--scale, 1);
+
+  height: 15px;
+
+  background-color: #4caf50;
+  /* border: solid 5px black; */
+}
+.exp-bar__numb {
+  position: relative;
+  z-index: 1000;
 }
 .experience-bar__lvl {
   font-size: 16px;
@@ -37,6 +64,9 @@
   border-radius: 50%;
 }
 .label-bar {
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .task__form {
   margin-top: 1rem;
@@ -45,4 +75,46 @@
   display: flex;
   justify-content: center;
   place-items: center;
+}
+.delete-button {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' enable-background='new 0 0 32 32' id='Stock_cut' version='1.1' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cdesc%3E%3C/desc%3E%3Cg%3E%3Cpolygon fill='none' points='25,11 7,11 9,31 23,31 ' stroke='currentColor' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'%3E%3C/polygon%3E%3Cline fill='none' stroke='currentColor' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='4' x2='28' y1='11' y2='11'%3E%3C/line%3E%3Cline fill='none' stroke='currentColor' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='13' x2='13' y1='31' y2='14'%3E%3C/line%3E%3Cline fill='none' stroke='currentColor' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='19' x2='19' y1='31' y2='14'%3E%3C/line%3E%3Cpolyline fill='none' points='13,11 13,7 19,7 19,11 ' stroke='currentColor' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'%3E%3C/polyline%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  /* background-position: center; */
+  background-size: 22px 22px;
+  background-repeat: no-repeat;
+  background-color: inherit;
+  border: none;
+
+  color: rgb(196, 81, 81);
+  cursor: pointer;
+
+  width: 27px;
+  height: 27px;
+}
+.delete-button:hover {
+  transform: scale(1.1);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' enable-background='new 0 0 32 32' id='Stock_cut' version='1.1' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cdesc%3E%3C/desc%3E%3Cg%3E%3Cpolygon fill='none' points='25,11 7,11 9,31 23,31 ' stroke='rgb(196, 81, 81)' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'%3E%3C/polygon%3E%3Cline fill='none' stroke='rgb(196, 81, 81)' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='4' x2='28' y1='11' y2='11'%3E%3C/line%3E%3Cline fill='none' stroke='rgb(196, 81, 81)' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='13' x2='13' y1='31' y2='14'%3E%3C/line%3E%3Cline fill='none' stroke='rgb(196, 81, 81)' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2' x1='19' x2='19' y1='31' y2='14'%3E%3C/line%3E%3Cpolyline fill='none' points='13,11 13,7 19,7 19,11 ' stroke='rgb(196, 81, 81)' stroke-linejoin='round' stroke-miterlimit='10' stroke-width='2'%3E%3C/polyline%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.task__input {
+  width: 210px;
+  padding: 0px 10px;
+  box-sizing: border-box;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  outline: none;
+}
+.task__button {
+  margin-top: 0.2rem;
+
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }

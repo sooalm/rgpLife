@@ -15,14 +15,3 @@
 
   position: relative;
 }
-.app-gridContainer {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: 1fr 3fr;
-}
-.logo {
-  height: 6em;
-
-  will-change: filter;
-  transition: filter 300ms;
-}

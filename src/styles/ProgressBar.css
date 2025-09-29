@@ -7,7 +7,8 @@
   --size: 132px;
   --bar-width: 20px;
   --color-dark: #333;
-  --color-dark-glare: #666;
+  /* --color-dark-glare: #666; */
+  --color-dark-glare: #e7cebf;
 
   font-size: 2rem;
   width: var(--size);
@@ -28,7 +29,8 @@
 
   &::after {
     content: attr(aria-valuenow);
-    background: #dd7979;
+    /* background: #dd7979; */
+    background: #eb8c8c;
     border-radius: inherit;
     width: calc(100% - var(--bar-width));
     aspect-ratio: 1/1;
@@ -87,4 +89,77 @@
 .flex-row--mtb-1r {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.custom-select {
+  width: 180px;
+  position: relative;
+
+  /* padding: 6px 20px 6px 12px; */
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d3748;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.select-selected {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 20px;
+  cursor: pointer;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.select-selected:after {
+  content: "▼";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.select-items {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  z-index: 99;
+}
+
+.select-items div {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.select-items div:hover {
+  background-color: #e0e0e0;
+}
+
+.select-hide {
+  display: none;
+}
+.custom-option {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.custom-select[data-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
 }
